@@ -39,15 +39,14 @@ namespace SOAD8
             return K % m;
         }
 
-        // === Метод середины квадрата ===
         private int hashMidSquare(int K, int n)
         {
-            long square = (long)K * (long)K;
+            long square = K * K;
+
+            if (square < n) return (int)square;
 
             int digits = (int)Math.Floor(Math.Log10(n - 1)) + 1;
-
             int numDigits = (int)Math.Floor(Math.Log10(square)) + 1;
-
             int shift = (numDigits - digits) / 2;
 
             if (((numDigits - digits) % 2) != 0)
@@ -58,7 +57,6 @@ namespace SOAD8
             return (int)middle;
         }
 
-        // === Метод свёртывания ===
         private int hashFolding(long K, int n)
         {
             int digits = (int)Math.Floor(Math.Log10(n - 1)) + 1;
@@ -75,18 +73,17 @@ namespace SOAD8
             return (int)(sum % n);
         }
 
-        // === Метод умножения ===
         private int hashMultiplication(int K, int n)
         {
-            const double A = 0.6180339887;
-            double frac = (K * A) - Math.Floor(K * A);
+            double A = (Math.Sqrt(5) - 1) / 2;
+            double frac = (K * A) % 1;
             return (int)Math.Floor(n * frac);
         }
 
         private void onCalculateClick(object sender, EventArgs e)
         {
-            int K = 45678; // ключ
-            int n = 1000; // диапазон 
+            int K = 45678; 
+            int n = 1000;  
 
             int divisionHashAdress = hashDivision(K, n);
             int midSquareHashAdress = hashMidSquare(K, n);
