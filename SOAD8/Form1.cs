@@ -12,6 +12,8 @@ namespace SOAD8
 {
     public partial class HashForm : Form
     {
+        Random rnd = new Random();
+
         public HashForm()
         {
             InitializeComponent();
@@ -41,7 +43,7 @@ namespace SOAD8
 
         private int hashMidSquare(int K, int n)
         {
-            long square = K * K;
+            long square = (long)K * (long)K;
 
             if (square < n) return (int)square;
 
@@ -80,20 +82,74 @@ namespace SOAD8
             return (int)Math.Floor(n * frac);
         }
 
+        private void analyzeHashFunctions(int n, int[] t)
+        {
+            int methodsAmount = t.Length;
+
+            int[] M = new int[1000];
+            for (int i = 0; i < M.Length; i++)
+                M[i] = rnd.Next(0, 100000);
+
+            // счетчики коллизий
+            int[] collisions = new int[methodsAmount];
+
+            List<int>[] chains = new List<int>[n];
+            for (int i = 0; i < n; i++)
+                chains[i] = new List<int>();
+
+            for (int f = 0; f < methodsAmount; f++)
+            {
+                for (int i = 0; i < n; i++)
+                    chains[i].Clear();
+
+                foreach (int key in M)
+                {
+                    int hash = 0;
+                    switch (f)
+                    {
+                        case 0:
+                            hash = hashDivision(key, n);
+                            break;
+                        case 1:
+                            hash = hashMidSquare(key, n);
+                            break;
+                        case 2:
+                            hash = hashFolding(key, n);
+                            break;
+                        case 3:
+                            hash = hashMultiplication(key, n);
+                            break;
+                    }
+
+                    if (chains[hash].Count > 0)
+                        collisions[f]++;
+
+                    chains[hash].Add(key);
+                }
+            }
+
+            int min = Math.Min(Math.Min(collisions[0], collisions[1]),
+                               Math.Min(collisions[2], collisions[3]));
+
+            for (int i = 0; i < methodsAmount; i++)
+                if (collisions[i] == min)
+                    t[i]++;
+        }
+
         private void onCalculateClick(object sender, EventArgs e)
         {
-            int K = 45678; 
-            int n = 1000;  
+            int iterations = (int)comparisonAmount.Value;
 
-            int divisionHashAdress = hashDivision(K, n);
-            int midSquareHashAdress = hashMidSquare(K, n);
-            int foldingHashAdress = hashFolding(K, n);
-            int multiplyHashAdress = hashMultiplication(K, n);
+            int n = 1000;
+            const int methodsAmount = 4;
+            int[] t = new int[methodsAmount];
 
-            divisionMethodTextBox.Text = divisionHashAdress.ToString();
-            midSquareTextBox.Text = midSquareHashAdress.ToString();
-            foldingTextBox.Text = foldingHashAdress.ToString();
-            multiplyTextBox.Text = multiplyHashAdress.ToString();
+            for(int i = 0; i < iterations; i++) analyzeHashFunctions(n, t);
+
+            divisionMethodTextBox.Text = t[0].ToString();
+            midSquareTextBox.Text = t[1].ToString();
+            foldingTextBox.Text = t[2].ToString();
+            multiplyTextBox.Text = t[3].ToString();
         }
 
         private void onCloseClick(object sender, EventArgs e)

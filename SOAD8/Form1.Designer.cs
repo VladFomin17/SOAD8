@@ -199,9 +199,24 @@
             // comparisonAmount
             // 
             this.comparisonAmount.Location = new System.Drawing.Point(207, 53);
+            this.comparisonAmount.Maximum = new decimal(new int[] {
+            1661992960,
+            1808227885,
+            5,
+            0});
+            this.comparisonAmount.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.comparisonAmount.Name = "comparisonAmount";
             this.comparisonAmount.Size = new System.Drawing.Size(123, 22);
             this.comparisonAmount.TabIndex = 2;
+            this.comparisonAmount.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             // 
             // label2
             // 
