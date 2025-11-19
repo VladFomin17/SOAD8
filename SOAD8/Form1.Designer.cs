@@ -213,7 +213,7 @@
             this.comparisonAmount.Size = new System.Drawing.Size(123, 22);
             this.comparisonAmount.TabIndex = 2;
             this.comparisonAmount.Value = new decimal(new int[] {
-            100,
+            1000,
             0,
             0,
             0});
@@ -363,6 +363,7 @@
             this.compareButton.TabIndex = 17;
             this.compareButton.Text = "Сравнить";
             this.compareButton.UseVisualStyleBackColor = true;
+            this.compareButton.Click += new System.EventHandler(this.onCompareClick);
             // 
             // closeButton
             // 

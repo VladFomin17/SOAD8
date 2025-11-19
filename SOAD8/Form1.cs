@@ -90,7 +90,6 @@ namespace SOAD8
             for (int i = 0; i < M.Length; i++)
                 M[i] = rnd.Next(0, 100000);
 
-            // счетчики коллизий
             int[] collisions = new int[methodsAmount];
 
             List<int>[] chains = new List<int>[n];
@@ -136,6 +135,74 @@ namespace SOAD8
                     t[i]++;
         }
 
+        private void analyzeOpenAddressing()
+        {
+            const int size = 10000;
+
+            int[] MOA = new int[size];
+            int[] M1 = new int[size];
+            int[] M2 = new int[size];
+
+            for (int i = 0; i < size; i++)
+                MOA[i] = -1;
+
+            for (int i = 0; i < size; i++)
+                M1[i] = rnd.Next(0, 10001);
+
+            foreach (int key in M1)
+            {
+                int h = hashMultiplication(key, size);
+                int start = h;
+
+                while (MOA[h] != -1)
+                {
+                    h = (h + 1) % size;
+
+                    if (h == start) break;
+                }
+
+                MOA[h] = key;
+            }
+
+            for (int i = 0; i < size; i++)
+                M2[i] = rnd.Next(0, 20001);
+
+            int comparisons = 0;
+            int found = 0;
+
+            int tStart = Environment.TickCount;
+
+            foreach (int key in M2)
+            {
+                int h = hashMultiplication(key, size);
+                int start = h;
+
+                while (MOA[h] != -1)
+                {
+                    comparisons++;
+
+                    if (MOA[h] == key)
+                    {
+                        found++;
+                        break;
+                    }
+
+                    h = (h + 1) % size;
+
+                    if (h == start) break;
+                }
+            }
+
+            int tEnd = Environment.TickCount;
+            int time = tEnd - tStart;
+
+            double avgComparisons = (double)comparisons / size;
+
+            openAdressingTimeTextBox.Text = time.ToString();
+            openAdressingComparesTextBox.Text = avgComparisons.ToString("0.####");
+            openAdressingFoundTextBox.Text = found.ToString();
+        }
+
         private void onCalculateClick(object sender, EventArgs e)
         {
             int iterations = (int)comparisonAmount.Value;
@@ -155,6 +222,11 @@ namespace SOAD8
         private void onCloseClick(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void onCompareClick(object sender, EventArgs e)
+        {
+            analyzeOpenAddressing();
         }
     }
 }
